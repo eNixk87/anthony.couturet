@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="UX design case study: Redesigning hospitality table management to support live decision-making through temporal workload visualisation." />
+  <meta name="author" content="Anthony Couturet" />
+  <meta property="og:title" content="When Things Go to Seat — UX Design Case Study" />
+  <meta property="og:description" content="UX design case study: Redesigning hospitality table management to support live decision-making through temporal workload visualisation." />
+  <meta property="og:type" content="website" />
+  <title>When Things Go to Seat — Anthony Couturet</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* ---------- RESET & VARIABLES ---------- */
+    *, *::before, *::after { 
+      margin: 0; 
+      padding: 0; 
+      box-sizing: border-box; 
+    }
+    :root { 
+      --black: #0a0a0a; 
+      --white: #f2f0eb; 
+      --mid: #555;
+      --c1: #4ecdc4; /* Project accent - teal */
+    }
+    html { scroll-behavior: smooth; }
+    
+    body { 
+      background: var(--black); 
+      color: var(--white); 
+      font-family: 'DM Sans', sans-serif; 
+      font-weight: 400; 
+      overflow-x: hidden; 
+      line-height: 1.6;
+    }
+
+    /* ---------- CUSTOM CURSOR ---------- */
+    @media (pointer: fine) {
+      body { cursor: none; }
+      .cursor { 
+        position: fixed; 
+        width: 10px; 
+        height: 10px; 
+        background: var(--white); 
+        border-radius: 50%; 
+        pointer-events: none; 
+        z-index: 9999; 
+        transform: translate(-50%,-50%); 
+        transition: width 0.2s ease, height 0.2s ease; 
+      }
+      .cursor.grow { 
+        width: 36px; 
+        height: 36px; 
+        background: transparent; 
+        border: 1.5px solid var(--white); 
+      }
+    }
+    @media (pointer: coarse) { .cursor { display: none; } }
+
+    /* ---------- ACCESSIBILITY ---------- */
+    .skip-link { 
+      position: absolute; 
+      top: -100%; 
+      left: 16px; 
+      background: var(--white); 
+      color: var(--black); 
+      padding: 12px 24px; 
+      font-size: 14px; 
+      font-weight: 600; 
+      z-index: 9999; 
+      text-decoration: none; 
+      border-radius: 0 0 4px 4px; 
+    }
+    .skip-link:focus { top: 0; }
+    :focus-visible { 
+      outline: 2px solid var(--white); 
+      outline-offset: 4px; 
+    }
+
+    /* ---------- NAVIGATION ---------- */
+    nav { 
+      position: fixed; 
+      top: 0; 
+      left: 0; 
+      right: 0; 
+      z-index: 100; 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      padding: 28px 48px; 
+      background: var(--black); 
+      border-bottom: 1px solid #1a1a1a; 
+    }
+    .logo svg { width: 36px; height: 36px; }
+    .nav-links { 
+      display: flex; 
+      gap: 40px; 
+      list-style: none; 
+    }
+    .nav-links a { 
+      color: var(--white); 
+      text-decoration: none; 
+      font-weight: 600; 
+      font-size: 13px; 
+      letter-spacing: 0.15em; 
+      text-transform: uppercase; 
+    }
+    .back-link { 
+      display: flex; 
+      align-items: center; 
+      gap: 10px; 
+      font-weight: 600; 
+      font-size: 11px; 
+      letter-spacing: 0.2em; 
+      text-transform: uppercase; 
+      color: var(--mid); 
+      text-decoration: none; 
+      transition: color 0.3s; 
+    }
+    .back-link:hover { color: var(--white); }
+
+    /* ---------- PROJECT HERO ---------- */
+    .project-hero { 
+      padding-top: 100px; 
+      min-height: 90vh; 
+      display: flex; 
+      flex-direction: column; 
+      justify-content: flex-end; 
+      padding-bottom: 80px; 
+      position: relative; 
+      overflow: hidden; 
+    }
+    .hero-bg-placeholder { 
+      position: absolute; 
+      inset: 0; 
+      background: linear-gradient(135deg, #0d1b2a 0%, #0a1520 60%, #06101a 100%); 
+    }
+    .hero-image-wrapper { 
+      position: absolute; 
+      right: 0; 
+      top: 0; 
+      width: 70%; 
+      height: 100%; 
+      z-index: 1; 
+    }
+    .hero-image-wrapper img { 
+      width: 100%; 
+      height: 100%; 
+      object-fit: contain; 
+      object-position: right center; 
+      opacity: 1; 
+    }
+    .hero-gradient { 
+      position: absolute; 
+      inset: 0; 
+      background: linear-gradient(to right, var(--black) 15%, transparent 55%); 
+      pointer-events: none; 
+    }
+    .project-hero-content {
+      position: relative;
+      z-index: 3;
+      width: 100%;
+      max-width: 1200px;
+      padding: 0 80px;
+    }
+    .project-hero-content .project-title {
+      max-width: 750px;
+    }
+    .project-number { 
+      font-weight: 600; 
+      font-size: 11px; 
+      letter-spacing: 0.25em; 
+      text-transform: uppercase; 
+      color: rgba(255,255,255,0.4); 
+      margin-bottom: 20px; 
+    }
+    .project-category-tag { 
+      display: inline-block; 
+      font-weight: 600; 
+      font-size: 11px; 
+      letter-spacing: 0.2em; 
+      text-transform: uppercase; 
+      color: var(--black); 
+      background: var(--white); 
+      padding: 7px 16px; 
+      margin-bottom: 24px; 
+    }
+    .project-title { 
+      font-family: 'Cormorant Garamond', serif; 
+      font-weight: 600; 
+      font-style: italic; 
+      font-size: clamp(50px, 8vw, 120px); 
+      line-height: 0.88; 
+      letter-spacing: 0.02em; 
+      color: var(--white); 
+      margin-bottom: 40px; 
+      max-width: 750px;
+    }
+    .project-meta { 
+      display: grid; 
+      grid-template-columns: repeat(4, auto); 
+      gap: 60px; 
+      justify-content: start; 
+    }
+    .meta-item label { 
+      display: block; 
+      font-size: 10px; 
+      letter-spacing: 0.2em; 
+      text-transform: uppercase; 
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 6px; 
+    }
+    .meta-item span { 
+      font-size: 14px; 
+      color: rgba(255,255,255,0.8); 
+      white-space: nowrap; 
+    }
+
+    /* ---------- CONTENT SECTIONS ---------- */
+    .content-section {
+      padding: 100px 80px;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    
+    .content-section:last-of-type {
+      border-bottom: none;
+    }
+    
+    .section-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .section-heading {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(36px, 5vw, 64px);
+      line-height: 0.95;
+      margin-bottom: 40px;
+      color: var(--white);
+      max-width: 800px;
+    }
+    
+    .section-heading .accent {
+      color: var(--c1);
+      font-style: italic;
+    }
+    
+    .section-subhead {
+      font-size: 14px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--c1);
+      margin-bottom: 16px;
+    }
+    
+    .body-text {
+      font-size: 17px;
+      line-height: 1.9;
+      color: #ccc;
+      max-width: 700px;
+      margin-bottom: 24px;
+    }
+    
+    .body-text strong {
+      color: var(--white);
+      font-weight: 600;
+    }
+    
+    .body-text-large {
+      font-size: 20px;
+      line-height: 1.7;
+      color: #eee;
+      max-width: 800px;
+      margin-bottom: 40px;
+      font-weight: 300;
+    }
+
+    /* ---------- IMAGE CONTAINER - FULL COLOUR ---------- */
+    .image-container {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #0a0a0a;
+      margin: 40px 0;
+      padding: 20px;
+      border-radius: 4px;
+    }
+
+    .image-container img {
+      max-width: 100%;
+      max-height: 80vh;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      opacity: 1;
+      transition: opacity 0.3s ease;
+      
+      /* Subtle edge fade */
+      mask-image: radial-gradient(circle at center, black 85%, transparent 100%);
+      -webkit-mask-image: radial-gradient(circle at center, black 85%, transparent 100%);
+    }
+
+    .caption { 
+      font-size: 11px; 
+      color: #999; 
+      margin-top: 12px;
+      margin-bottom: 40px;
+      letter-spacing: 0.06em; 
+      text-align: center;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .image-container + .caption {
+      margin-top: -12px;
+    }
+
+    /* Grid layouts */
+    .two-col { 
+      display: grid; 
+      grid-template-columns: 1fr 1fr; 
+      gap: 30px; 
+      margin: 40px 0;
+    }
+    .two-col .image-container {
+      margin: 0;
+    }
+
+    /* ---------- INSIGHT BOX ---------- */
+    .insight-box {
+      background: #111;
+      border-left: 3px solid var(--c1);
+      padding: 40px;
+      margin: 60px 0;
+      max-width: 800px;
+    }
+    .insight-box h4 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 24px;
+      margin-bottom: 16px;
+      color: var(--c1);
+    }
+    .insight-box p {
+      color: #ccc;
+      font-size: 16px;
+      line-height: 1.8;
+    }
+
+    /* ---------- PULL QUOTE ---------- */
+    .pull-quote { 
+      border-left: 3px solid var(--c1); 
+      padding: 20px 0 20px 40px; 
+      margin: 60px 0; 
+      max-width: 800px; 
+    }
+    .pull-quote p { 
+      font-family: 'Cormorant Garamond', serif; 
+      font-style: italic; 
+      font-size: 28px; 
+      line-height: 1.4; 
+      color: rgba(242,240,235,0.9); 
+      font-weight: 300; 
+      margin-bottom: 16px;
+    }
+
+    /* ---------- SIMPLE FADE-IN ON SCROLL ---------- */
+    .fade-section {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    
+    .fade-section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ---------- FOOTER CTA ---------- */
+    .project-footer-cta { 
+      padding: 120px 80px; 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      border-top: 1px solid #1a1a1a; 
+      background: var(--black);
+    }
+    .project-footer-cta h3 { 
+      font-family: 'Cormorant Garamond', serif; 
+      font-size: clamp(40px, 6vw, 80px); 
+      line-height: 0.9; 
+      color: var(--white);
+    }
+    .next-project-link { 
+      display: flex; 
+      align-items: center; 
+      gap: 16px; 
+      font-weight: 600; 
+      font-size: 12px; 
+      letter-spacing: 0.2em; 
+      text-transform: uppercase; 
+      color: var(--white); 
+      text-decoration: none; 
+      border: 1px solid rgba(255,255,255,0.3); 
+      padding: 16px 28px; 
+      transition: background 0.3s, color 0.3s; 
+    }
+    .next-project-link:hover { 
+      background: var(--white); 
+      color: var(--black); 
+    }
+
+    /* ---------- IMPROVED MOBILE RESPONSIVE FOR PROJECTS ---------- */
+    @media (max-width: 768px) {
+      nav { padding: 20px 24px; }
+
+      .hero-image-wrapper { display: none; }
+      .hero-gradient { display: none; }
+      .project-hero {
+        min-height: auto;
+        padding: 40px 0 40px;
+      }
+      .project-hero::after { display: none; }
+      .project-hero-content { padding: 0 24px; width: 100%; max-width: 100%; }
+      .project-hero-content > div { max-width: 100% !important; margin-left: 0 !important; }
+      .mobile-accent-bars {
+        position: relative;
+        top: 0;
+        left: 0;
+        margin-left: 4px;
+        display: flex;
+        gap: 6px;
+        align-items: flex-end;
+        height: 48px;
+        margin-bottom: 24px;
+        opacity: 0.8;
+      }
+      .mobile-accent-bars .bar {
+        width: 5px;
+        border-radius: 2px;
+        background: var(--c1);
+        animation: barPulse 2.4s ease-in-out infinite;
+      }
+      .mobile-accent-bars .bar:nth-child(1) { height: 45%; animation-delay: 0s; }
+      .mobile-accent-bars .bar:nth-child(2) { height: 100%; animation-delay: 0.3s; }
+      .mobile-accent-bars .bar:nth-child(3) { height: 35%; animation-delay: 0.6s; }
+      .mobile-accent-bars .bar:nth-child(4) { height: 70%; animation-delay: 0.15s; }
+      .mobile-accent-bars .bar:nth-child(5) { height: 55%; animation-delay: 0.45s; }
+      .mobile-accent-bars .bar:nth-child(6) { height: 80%; animation-delay: 0.75s; }
+      @keyframes barPulse {
+        0%, 100% { transform: scaleY(1); opacity: 0.5; }
+        50% { transform: scaleY(0.4); opacity: 1; }
+      }
+      .project-category-tag {
+        display: inline-block;
+        font-weight: 600;
+        font-size: 11px;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--c1);
+        background: transparent;
+        border: 1.5px solid var(--c1);
+        padding: 6px 14px;
+        margin-bottom: 20px;
+      }
+      .project-number { font-size: 11px; margin-bottom: 16px; color: rgba(255,255,255,0.5); }
+      .project-title { font-size: clamp(50px, 13vw, 70px); margin-bottom: 32px; max-width: 100%; }
+      .project-meta {
+        display: grid;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 24px 20px !important;
+        margin-top: 32px;
+        padding-bottom: 32px;
+        border-bottom: 2px solid rgba(78, 205, 196, 0.2);
+      }
+      .meta-item { margin-bottom: 0; }
+      .meta-item label { font-size: 9px; margin-bottom: 6px; color: rgba(255,255,255,0.6); letter-spacing: 0.15em; }
+      .meta-item span { font-size: 14px; white-space: normal !important; line-height: 1.5; display: block; color: rgba(255,255,255,0.9); }
+
+      .content-section { padding: 50px 24px; }
+
+      .image-container { margin: 20px 0; padding: 10px; }
+      .image-container img { max-height: 60vh; }
+
+      .two-col, .three-col, .persona-grid, .competitor-grid, .palette-grid {
+        grid-template-columns: 1fr; gap: 20px; margin: 20px 0;
+      }
+
+      .competitor { padding: 20px; }
+      .persona { padding: 24px; }
+      .insight-box { padding: 24px; margin: 30px 0; }
+      .pull-quote { padding-left: 20px; margin: 30px 0; }
+      .pull-quote p { font-size: 22px; }
+
+      .project-footer-cta { padding: 50px 24px; flex-direction: column; gap: 30px; align-items: flex-start; }
+      .project-footer-cta h3 { font-size: clamp(35px, 10vw, 50px); }
+      .next-project-link { padding: 14px 24px; font-size: 11px; }
+
+      .cursor { display: none; }
+      body { cursor: auto; }
+    }
+
+    @media (max-width: 480px) {
+      .project-title { font-size: clamp(35px, 12vw, 50px); }
+      .section-heading { font-size: clamp(28px, 7vw, 36px); }
+      .image-container img { max-height: 40vh; }
+      .three-col .image-container img { max-height: 150px; }
+    }
+  </style>
+</head>
+<body>
+  <a href="#project-content" class="skip-link">Skip to content</a>
+  <div class="cursor" id="cursor" aria-hidden="true"></div>
+  
+  <nav role="navigation" aria-label="Project navigation">
+    <a href="index.html" class="back-link" aria-label="Back to all projects">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      Back
+    </a>
+    <div class="logo">
+      <img src="images/logo.png" alt="Anthony Couturet" style="width: 36px; height: 36px;">
+    </div>
+    <ul class="nav-links">
+      <li><a href="index.html#work">Work</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <main id="project-content">
+
+  <!-- HERO SECTION -->
+  <div class="project-hero" style="position: relative; width: 100%; min-height: 90vh; display: flex; flex-direction: column; justify-content: flex-end; padding-bottom: 80px; background: var(--black); overflow: hidden;">
+
+    <!-- Mobile accent bars (only visible on mobile) -->
+    <div class="mobile-accent-bars" aria-hidden="true">
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+    </div>
+
+    <div class="hero-image-wrapper" style="position: absolute; right: 0; top: 0; width: 70%; height: 100%; z-index: 1;">
+      <img src="images/cover_try_seat.png"
+           alt="When Things Go to Seat Dashboard Mockup"
+           style="width: 100%; height: 100%; object-fit: contain; object-position: right center; opacity: 1;">
+      <div style="position: absolute; inset: 0; background: linear-gradient(to right, var(--black) 15%, transparent 55%); pointer-events: none;"></div>
+    </div>
+
+    <div class="project-hero-content" style="position: relative; z-index: 3; width: 100%; max-width: 1200px; margin: 0; padding: 0 80px;">
+
+      <div style="max-width: 750px; margin-left: 0;">
+        <p class="project-number" style="font-weight: 600; font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 20px;">Project 01 / 04</p>
+        <span class="project-category-tag" style="display: inline-block; font-weight: 600; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--black); background: var(--white); padding: 7px 16px; margin-bottom: 24px;">UX Design · Service Design</span>
+
+        <h1 class="project-title" style="font-family: 'Cormorant Garamond', serif; font-weight: 600; font-style: italic; font-size: clamp(50px, 8vw, 120px); line-height: 0.88; letter-spacing: 0.02em; color: var(--white); margin-bottom: 40px;">When Things<br>Go to Seat</h1>
+
+        <div class="project-meta" style="display: grid; grid-template-columns: repeat(4, auto); gap: 60px; justify-content: start;">
+          <div class="meta-item">
+            <label style="display: block; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 6px;">Context</label>
+            <span style="font-size: 14px; color: rgba(255,255,255,0.8); white-space: nowrap;">Petersham Nurseries, Richmond</span>
+          </div>
+          <div class="meta-item">
+            <label style="display: block; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 6px;">Role</label>
+            <span style="font-size: 14px; color: rgba(255,255,255,0.8); white-space: nowrap;">UX & Service Strategy</span>
+          </div>
+          <div class="meta-item">
+            <label style="display: block; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 6px;">Tools</label>
+            <span style="font-size: 14px; color: rgba(255,255,255,0.8); white-space: nowrap;">Figma, Illustrator, Blueprinting</span>
+          </div>
+          <div class="meta-item">
+            <label style="display: block; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 6px;">Year</label>
+            <span style="font-size: 14px; color: rgba(255,255,255,0.8);">2024</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- HERO IMAGE - Final solution -->
+  <div class="content-section fade-section" style="padding-top: 20px; padding-bottom: 40px;">
+    <div class="section-container">
+      <div class="image-container">
+        <img src="images/seat-cover.png" alt="Redesigned interface showing live floor view and workload signals">
+      </div>
+      <p class="caption">The redesigned interface — live floor view with blue occupancy glows and red workload signals.</p>
+    </div>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div class="content-section fade-section">
+    <div class="section-container">
+      <p class="section-subhead">Overview</p>
+      <h2 class="section-heading">A redesign of<br><span class="accent">SevenRooms</span></h2>
+      <p class="body-text-large">Most hospitality software tracks data but fails to support the lived reality of service pressure. This project redesigns the SevenRooms table management interface to shift focus from table status alone toward temporal workload and task convergence.</p>
+      
+      <div class="two-col" style="margin-top: 40px;">
+        <div>
+          <p class="body-text">The project is situated at Petersham Nurseries, a high-end restaurant in Richmond with high walk-in traffic and limited floor visibility. Hosts make rapid decisions under pressure, but the existing system overwhelms them with colour-coded states that don't reflect actual workload.</p>
+        </div>
+        <div>
+          <p class="body-text">Through situated observation and service blueprinting, a central insight emerged: <strong>workload is temporal, not spatial</strong>. Overload occurs when tasks converge, not when sections are full. The redesign makes this invisible workload visible.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- THE PROBLEM - Existing system -->
+  <div class="content-section fade-section">
+    <div class="section-container">
+      <p class="section-subhead">The Problem</p>
+      <h2 class="section-heading">Data without<br><span class="accent">context</span></h2>
+      
+      <div class="image-container">
+        <img src="images/1.jpg" alt="SevenRooms existing interface showing colour-coded table states">
+      </div>
+      <p class="caption">The existing SevenRooms interface — colour codes track dining stages but fail to signal human capacity.</p>
+      
+      <p class="body-text">The existing system relies on multiple colour-coded table states that require significant cognitive effort to interpret. During observation, hosts largely ignored these indicators once service began — they only needed to know if a table was occupied or available.</p>
+      
+      <div class="insight-box">
+        <h4>Critical finding</h4>
+        <p>The system does not represent workload. It doesn't indicate whether seating a table now will create pressure later. Decisions are made based on availability rather than capacity.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- KEY INSIGHT -->
+  <div class="content-section fade-section">
+    <div class="section-container">
+      <p class="section-subhead">Key Insight</p>
+      <h2 class="section-heading">Workload is temporal,<br><span class="accent">not spatial</span></h2>
+      <div class="pull-quote">
+        <p>Overload does not occur when sections are full. It occurs when tasks converge.</p>
+      </div>
+      <p class="body-text">Seating three tables at the same time can generate more pressure than managing eight tables that are already eating. This type of workload is felt immediately by staff but remains invisible to the system supporting seating decisions.</p>
+    </div>
+  </div>
+
+  <!-- SERVICE ANALYSIS -->
+  <div class="content-section fade-section">
+    <div class="section-container">
+      <p class="section-subhead">Analysis</p>
+      <h2 class="section-heading">Blueprinting the<br><span class="accent">allocation cycle</span></h2>
+      
+      <div class="image-container">
+        <img src="images/2.png" alt="Service blueprint mapping the resource allocation cycle">
+      </div>
+      <p class="caption">Service blueprint identifying the gap between system tracking and host coordination needs.</p>
+      
+      <p class="body-text">A detailed service blueprint mapped the full table allocation cycle. It revealed that while certain stages are well supported digitally, moments of handover, order taking, and table reset are vulnerable to overload. Feedback from floor to host is slow or absent.</p>
+    </div>
+  </div>
+
+  <!-- DESIGN DIRECTION -->
+  <div class="content-section fade-section">
+    <div class="section-container">
+      <p class="section-subhead">Design Direction</p>
+      <h2 class="section-heading">Perceptual clarity over<br><span class="accent">data density</span></h2>
+      <p class="body-text">Rather than adding new metrics, the design focuses on perceptual clarity. The system communicates pressure, timing, and consequence without requiring conscious interpretation — moving away from labels and alerts toward visual cues understood immediately.</p>
+    </div>
+  </div>
+
+  <!-- FLOORPLAN STRUCTURE -->
+  <div class="content-section fade-section">
+    <div class="section-container">
+      <p class="section-subhead">Spatial Foundation</p>
+      <h2 class="section-heading">Breaking down<br><span class="accent">the floorplan</span></h2>
+      
+      <div class="image-container">
+        <img src="images/3.png" alt="Bare floorplan structural view">
+      </div>
+      <p class="caption">Structural layout — sections are spatially delimited without colour coding.</p>
+      
+      <p class="body-text">The dining space is divided into five clearly defined sections. These are not colour coded — section identity is communicated through form and labelling alone, allowing workload signals to carry meaning without competition.</p>
+    </div>
+  </div>
+
+  <!-- TABLE LEVEL -->
+  <div class="content-section fade-section">
+    <div class="section-container">
+      <p class="section-subhead">Table Level</p>
+      <h2 class="section-heading">Binary clarity:<br><span class="accent">occupied or available</span></h2>
+      
+      <div class="image-container">
+        <img src="images/4.png" alt="Floorplan with blue table-level occupancy glow">
+      </div>
+      <p class="caption">Binary occupancy layer — blue glow indicates occupied tables, and nothing more.</p>
+      
+      <p class="body-text">A consistent blue glow indicates occupancy. No urgency, no task state — just a simple answer to "is this table occupied?" This reduction dramatically lowers cognitive load during busy service.</p>
+    </div>
+  </div>
+
+  <!-- SECTION LEVEL -->
+  <div class="content-section fade-section">
+    <div class="section-container">
+      <p class="section-subhead">Section Level</p>
+      <h2 class="section-heading">Red glow:<br><span class="accent">pressure, not occupancy</span></h2>
+      
+      <div class="image-container">
+        <img src="images/5.png" alt="Floorplan with red section-level workload signals">
+      </div>
+      <p class="caption">Section-level workload — red glow indicates task convergence, not table occupancy.</p>
+      
+      <p class="body-text">A red glow signals high workload from task convergence — multiple orders pending, overlapping payments, or simultaneous seating. Even with few tables, effort can be high. This shifts decision-making from "where is there space?" to "where can effort be absorbed?"</p>
+    </div>
+  </div>
+
+  <!-- FORECASTING -->
+  <div class="content-section fade-section">
+    <div class="section-container">
+      <p class="section-subhead">Forecasting</p>
+      <h2 class="section-heading">Short-term projection<br><span class="accent">15–20 minutes ahead</span></h2>
+      
+      <div class="image-container">
+        <img src="images/8.png" alt="Right-hand workload forecast and attention panel">
+      </div>
+      <p class="caption">Workload forecast — anticipating pressure before it arrives.</p>
+      
+      <p class="body-text">The right-hand panel visualises how workload will evolve over the next 15–20 minutes. Not a precise prediction, but a directional guide — helping hosts anticipate where decisions made now will have consequences shortly.</p>
+    </div>
+  </div>
+
+  <!-- KEY DECISIONS -->
+  <div class="content-section fade-section">
+    <div class="section-container">
+      <p class="section-subhead">Design Decisions</p>
+      <h2 class="section-heading">Support,<br><span class="accent">not automation</span></h2>
+      <p class="body-text">The design deliberately avoids automation, alerts, and numerical data on the main interface. Hospitality relies on human judgement — the system should support awareness, not replace it.</p>
+      
+      <div class="insight-box" style="margin-top: 40px;">
+        <h4>What changed</h4>
+        <p>From colour-coded table states → binary occupancy<br>
+        From static data → temporal workload signals<br>
+        From reactive alerts → anticipatory cues<br>
+        From control panel → awareness tool</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONCLUSION -->
+  <div class="content-section fade-section">
+    <div class="section-container">
+      <p class="section-subhead">Conclusion</p>
+      <h2 class="section-heading">Supporting people,<br><span class="accent">not just processes</span></h2>
+      <p class="body-text-large">By reframing table allocation as a temporal problem rather than a spatial one, the design aligns with the realities of hospitality work.</p>
+      <p class="body-text">The system makes invisible workload visible — supporting hosts to make more informed, grounded decisions during live service. It demonstrates that service systems should support the people who operate them, not just the processes they manage.</p>
+    </div>
+  </div>
+
+  <!-- FOOTER CTA -->
+  <div class="project-footer-cta">
+    <h3>Next<br>Project</h3>
+    <a href="project-piano.html" class="next-project-link" aria-label="View next project: Steampunk Piano Festival">
+      Steampunk Piano Festival 
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </a>
+  </div>
+
+  </main>
+
+  <script>
+    // Custom cursor
+    const cursor = document.getElementById('cursor');
+    if (window.matchMedia('(pointer: fine)').matches && cursor) {
+      document.addEventListener('mousemove', e => {
+        cursor.style.left = e.clientX + 'px';
+        cursor.style.top = e.clientY + 'px';
+      });
+      document.querySelectorAll('a, button').forEach(el => {
+        el.addEventListener('mouseenter', () => cursor.classList.add('grow'));
+        el.addEventListener('mouseleave', () => cursor.classList.remove('grow'));
+      });
+    }
+
+    // Simple fade-in on scroll
+    const fadeElements = document.querySelectorAll('.fade-section');
+    
+    const fadeObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.2, rootMargin: '0px 0px -10px 0px' });
+    
+    fadeElements.forEach(el => fadeObserver.observe(el));
+  </script>
+
+</body>
+</html>

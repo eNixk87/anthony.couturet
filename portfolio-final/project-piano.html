@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Graphic design case study: Developing a cohesive brand identity and place-based strategy for a mechanical musical festival." />
+  <meta name="author" content="Anthony Couturet" />
+  <meta property="og:title" content="Steampunk Piano Festival — Graphic Design Case Study" />
+  <meta property="og:description" content="Graphic design case study: Developing a cohesive brand identity and place-based strategy for a mechanical musical festival." />
+  <meta property="og:type" content="website" />
+  <title>Steampunk Piano Festival — Anthony Couturet</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* ---------- RESET & VARIABLES ---------- */
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    :root {
+      --black: #0a0a0a;
+      --white: #f2f0eb;
+      --mid: #555;
+      --c2: #e8c547; /* Project accent - gold */
+    }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 400;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* ---------- CUSTOM CURSOR ---------- */
+    @media (pointer: fine) {
+      body { cursor: none; }
+      .cursor {
+        position: fixed;
+        width: 10px;
+        height: 10px;
+        background: var(--white);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        transform: translate(-50%,-50%);
+        transition: width 0.2s ease, height 0.2s ease;
+      }
+      .cursor.grow {
+        width: 36px;
+        height: 36px;
+        background: transparent;
+        border: 1.5px solid var(--white);
+      }
+    }
+    @media (pointer: coarse) { .cursor { display: none; } }
+
+    /* ---------- ACCESSIBILITY ---------- */
+    .skip-link {
+      position: absolute;
+      top: -100%;
+      left: 16px;
+      background: var(--white);
+      color: var(--black);
+      padding: 12px 24px;
+      font-size: 14px;
+      font-weight: 600;
+      z-index: 9999;
+      text-decoration: none;
+      border-radius: 0 0 4px 4px;
+    }
+    .skip-link:focus { top: 0; }
+    :focus-visible {
+      outline: 2px solid var(--white);
+      outline-offset: 4px;
+    }
+
+    /* ---------- NAVIGATION ---------- */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 28px 48px;
+      background: var(--black);
+      border-bottom: 1px solid #1a1a1a;
+    }
+    .logo svg { width: 36px; height: 36px; }
+    .nav-links {
+      display: flex;
+      gap: 40px;
+      list-style: none;
+    }
+    .nav-links a {
+      color: var(--white);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 13px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+    .back-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--mid);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .back-link:hover { color: var(--white); }
+
+    /* ---------- PROJECT HERO ---------- */
+    .project-hero {
+      padding-top: 100px;
+      min-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding-bottom: 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-bg-placeholder {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #1a1a0a 0%, #1a150a 60%, #1a100a 100%);
+    }
+    .hero-image-wrapper {
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 70%;
+      height: 100%;
+      z-index: 1;
+    }
+    .hero-image-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: right center;
+      opacity: 1;
+    }
+    .hero-gradient {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, var(--black) 15%, transparent 55%);
+      pointer-events: none;
+    }
+    .project-hero-content {
+      position: relative;
+      z-index: 3;
+      width: 100%;
+      max-width: 1200px;
+      padding: 0 80px;
+    }
+    .project-hero-content .project-title {
+      max-width: 750px;
+    }
+    .project-number {
+      font-weight: 600;
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 20px;
+    }
+    .project-category-tag {
+      display: inline-block;
+      font-weight: 600;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--black);
+      background: var(--white);
+      padding: 7px 16px;
+      margin-bottom: 24px;
+    }
+    .project-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 600;
+      font-style: italic;
+      font-size: clamp(50px, 8vw, 120px);
+      line-height: 0.88;
+      letter-spacing: 0.02em;
+      color: var(--white);
+      margin-bottom: 40px;
+      max-width: 750px;
+    }
+    .project-meta {
+      display: grid;
+      grid-template-columns: repeat(4, auto);
+      gap: 60px;
+      justify-content: start;
+    }
+    .meta-item label {
+      display: block;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 6px;
+    }
+    .meta-item span {
+      font-size: 14px;
+      color: rgba(255,255,255,0.8);
+      white-space: nowrap;
+    }
+
+    /* ---------- CONTENT SECTIONS ---------- */
+    .content-section {
+      padding: 100px 80px;
+      border-bottom: 1px solid #1a1a1a;
+    }
+
+    .content-section:last-of-type {
+      border-bottom: none;
+    }
+
+    .section-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-heading {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(36px, 5vw, 64px);
+      line-height: 0.95;
+      margin-bottom: 40px;
+      color: var(--white);
+      max-width: 800px;
+    }
+
+    .section-heading .accent {
+      color: var(--c2);
+      font-style: italic;
+    }
+
+    .section-subhead {
+      font-size: 14px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--c2);
+      margin-bottom: 16px;
+    }
+
+    .body-text {
+      font-size: 17px;
+      line-height: 1.9;
+      color: #ccc;
+      max-width: 700px;
+      margin-bottom: 24px;
+    }
+
+    .body-text strong {
+      color: var(--white);
+      font-weight: 600;
+    }
+
+    .body-text-large {
+      font-size: 20px;
+      line-height: 1.7;
+      color: #eee;
+      max-width: 800px;
+      margin-bottom: 40px;
+      font-weight: 300;
+    }
+
+    /* ---------- IMAGE CONTAINER ---------- */
+    .image-container {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #0a0a0a;
+      margin: 40px 0;
+      padding: 20px;
+      border-radius: 4px;
+    }
+
+    .image-container img {
+      max-width: 100%;
+      max-height: 80vh;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      opacity: 1;
+      transition: opacity 0.3s ease;
+      
+      /* Subtle edge fade */
+      mask-image: radial-gradient(circle at center, black 85%, transparent 100%);
+      -webkit-mask-image: radial-gradient(circle at center, black 85%, transparent 100%);
+    }
+
+    .caption {
+      font-size: 11px;
+      color: #999;
+      margin-top: 12px;
+      margin-bottom: 40px;
+      letter-spacing: 0.06em;
+      text-align: center;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .image-container + .caption {
+      margin-top: -12px;
+    }
+
+    /* Grid layouts */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin: 40px 0;
+    }
+    .two-col .image-container {
+      margin: 0;
+    }
+
+    .three-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 20px;
+      margin: 40px 0;
+    }
+    .three-col .image-container {
+      margin: 0;
+    }
+
+    /* ---------- COLOUR PALETTE ---------- */
+    .palette-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin: 40px 0;
+    }
+    .swatch {
+      padding: 30px 20px;
+      border-radius: 4px;
+      text-align: center;
+    }
+    .swatch span {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      background: rgba(0,0,0,0.3);
+      padding: 4px 8px;
+      border-radius: 2px;
+      display: inline-block;
+    }
+
+    /* ---------- INSIGHT BOX ---------- */
+    .insight-box {
+      background: #111;
+      border-left: 3px solid var(--c2);
+      padding: 40px;
+      margin: 60px 0;
+      max-width: 800px;
+    }
+    .insight-box h4 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 24px;
+      margin-bottom: 16px;
+      color: var(--c2);
+    }
+    .insight-box p {
+      color: #ccc;
+      font-size: 16px;
+      line-height: 1.8;
+    }
+
+    /* ---------- PULL QUOTE ---------- */
+    .pull-quote {
+      border-left: 3px solid var(--c2);
+      padding: 20px 0 20px 40px;
+      margin: 60px 0;
+      max-width: 800px;
+    }
+    .pull-quote p {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 28px;
+      line-height: 1.4;
+      color: rgba(242,240,235,0.9);
+      font-weight: 300;
+    }
+
+    /* ---------- FADE-IN ON SCROLL ---------- */
+    .fade-section {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .fade-section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ---------- FOOTER CTA ---------- */
+    .project-footer-cta {
+      padding: 120px 80px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid #1a1a1a;
+      background: var(--black);
+    }
+    .project-footer-cta h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(40px, 6vw, 80px);
+      line-height: 0.9;
+      color: var(--white);
+    }
+    .next-project-link {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-weight: 600;
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--white);
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 16px 28px;
+      transition: background 0.3s, color 0.3s;
+    }
+    .next-project-link:hover {
+      background: var(--white);
+      color: var(--black);
+    }
+
+    /* ---------- IMPROVED MOBILE RESPONSIVE FOR PROJECTS ---------- */
+    @media (max-width: 768px) {
+      nav { padding: 20px 24px; }
+
+      .hero-image-wrapper { display: none; }
+      .hero-gradient { display: none; }
+      .project-hero {
+        min-height: auto;
+        padding: 40px 0 40px;
+      }
+      .project-hero::after { display: none; }
+      .project-hero-content { padding: 0 24px; width: 100%; max-width: 100%; }
+      .project-hero-content > div { max-width: 100% !important; margin-left: 0 !important; }
+      .mobile-accent-bars {
+        position: relative;
+        top: 0;
+        left: 0;
+        margin-left: 4px;
+        display: flex;
+        gap: 6px;
+        align-items: flex-end;
+        height: 48px;
+        margin-bottom: 24px;
+        opacity: 0.8;
+      }
+      .mobile-accent-bars .bar {
+        width: 5px;
+        border-radius: 2px;
+        background: var(--c2);
+        animation: barPulse 2.4s ease-in-out infinite;
+      }
+      .mobile-accent-bars .bar:nth-child(1) { height: 45%; animation-delay: 0s; }
+      .mobile-accent-bars .bar:nth-child(2) { height: 100%; animation-delay: 0.3s; }
+      .mobile-accent-bars .bar:nth-child(3) { height: 35%; animation-delay: 0.6s; }
+      .mobile-accent-bars .bar:nth-child(4) { height: 70%; animation-delay: 0.15s; }
+      .mobile-accent-bars .bar:nth-child(5) { height: 55%; animation-delay: 0.45s; }
+      .mobile-accent-bars .bar:nth-child(6) { height: 80%; animation-delay: 0.75s; }
+      @keyframes barPulse {
+        0%, 100% { transform: scaleY(1); opacity: 0.5; }
+        50% { transform: scaleY(0.4); opacity: 1; }
+      }
+      .project-category-tag {
+        display: inline-block;
+        font-weight: 600;
+        font-size: 11px;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--c2);
+        background: transparent;
+        border: 1.5px solid var(--c2);
+        padding: 6px 14px;
+        margin-bottom: 20px;
+      }
+      .project-number { font-size: 11px; margin-bottom: 16px; color: rgba(255,255,255,0.5); }
+      .project-title { font-size: clamp(50px, 13vw, 70px); margin-bottom: 32px; max-width: 100%; }
+      .project-meta {
+        display: grid;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 24px 20px !important;
+        margin-top: 32px;
+        padding-bottom: 32px;
+        border-bottom: 2px solid rgba(232, 197, 71, 0.2);
+      }
+      .meta-item { margin-bottom: 0; }
+      .meta-item label { font-size: 9px; margin-bottom: 6px; color: rgba(255,255,255,0.6); letter-spacing: 0.15em; }
+      .meta-item span { font-size: 14px; white-space: normal !important; line-height: 1.5; display: block; color: rgba(255,255,255,0.9); }
+
+      .content-section { padding: 50px 24px; }
+
+      .image-container { margin: 20px 0; padding: 10px; }
+      .image-container img { max-height: 60vh; }
+
+      .two-col, .three-col, .persona-grid, .competitor-grid, .palette-grid {
+        grid-template-columns: 1fr; gap: 20px; margin: 20px 0;
+      }
+
+      .competitor { padding: 20px; }
+      .persona { padding: 24px; }
+      .insight-box { padding: 24px; margin: 30px 0; }
+      .pull-quote { padding-left: 20px; margin: 30px 0; }
+      .pull-quote p { font-size: 22px; }
+
+      .project-footer-cta { padding: 50px 24px; flex-direction: column; gap: 30px; align-items: flex-start; }
+      .project-footer-cta h3 { font-size: clamp(35px, 10vw, 50px); }
+      .next-project-link { padding: 14px 24px; font-size: 11px; }
+
+      .cursor { display: none; }
+      body { cursor: auto; }
+    }
+
+    @media (max-width: 480px) {
+      .project-title { font-size: clamp(35px, 12vw, 50px); }
+      .section-heading { font-size: clamp(28px, 7vw, 36px); }
+      .image-container img { max-height: 40vh; }
+      .three-col .image-container img { max-height: 150px; }
+    }
+  </style>
+</head>
+<body>
+  <a href="#project-content" class="skip-link">Skip to content</a>
+  <div class="cursor" id="cursor" aria-hidden="true"></div>
+
+  <nav role="navigation" aria-label="Project navigation">
+    <a href="index.html" class="back-link" aria-label="Back to all projects">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      Back
+    </a>
+    <div class="logo">
+      <img src="images/logo.png" alt="Anthony Couturet" style="width: 36px; height: 36px;">
+    </div>
+    <ul class="nav-links">
+      <li><a href="index.html#work">Work</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <main id="project-content">
+
+  <!-- HERO SECTION -->
+  <div class="project-hero" style="position: relative; width: 100%; min-height: 90vh; display: flex; flex-direction: column; justify-content: flex-end; padding-bottom: 80px; background: var(--black); overflow: hidden;">
+
+    <!-- Mobile accent bars (only visible on mobile) -->
+    <div class="mobile-accent-bars" aria-hidden="true">
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+    </div>
+
+    <div class="hero-image-wrapper" style="position: absolute; right: 0; top: 0; width: 70%; height: 100%; z-index: 1;">
+      <img src="images/cover-piano.png"
+           alt="Steampunk Piano Festival hero poster — Victorian blueprint aesthetic"
+           style="width: 100%; height: 100%; object-fit: contain; object-position: right center; opacity: 1;">
+      <div style="position: absolute; inset: 0; background: linear-gradient(to right, var(--black) 15%, transparent 55%); pointer-events: none;"></div>
+    </div>
+
+    <div class="project-hero-content" style="position: relative; z-index: 3; width: 100%; max-width: 1200px; margin: 0; padding: 0 80px;">
+      <div style="max-width: 750px; margin-left: 0;">
+        <p class="project-number">Project 02 / 04</p>
+        <span class="project-category-tag">Graphic Design · Event Branding</span>
+        <h1 class="project-title">Steampunk<br>Piano Festival</h1>
+        <div class="project-meta">
+          <div class="meta-item">
+            <label>Context</label>
+            <span>Opera House, London</span>
+          </div>
+          <div class="meta-item">
+            <label>Role</label>
+            <span>Visual Identity</span>
+          </div>
+          <div class="meta-item">
+            <label>Tools</label>
+            <span>Illustrator, InDesign</span>
+          </div>
+          <div class="meta-item">
+            <label>Year</label>
+            <span>2024</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HERO POSTER -->
+  <div class="content-section fade-section" style="padding-top: 20px; padding-bottom: 40px;">
+    <div class="section-container">
+      <div class="image-container">
+        <img src="images/Screenshot 2026-02-25 104033.png" alt="Steampunk Piano Festival main poster with piano cross-section blueprint">
+      </div>
+      <p class="caption">The main poster — anchoring the festival's identity in historical illustration and archival teal.</p>
+    </div>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div class="content-section fade-section">
+    <div class="section-container">
+      <p class="section-subhead">Overview</p>
+      <h2 class="section-heading">A fusion of<br><span class="accent">historical eras</span></h2>
+      <p class="body-text-large">Most event branding relies on theatrical clichés, but the Steampunk Piano Festival required an identity that felt genuinely anchored in Victorian industrial reality. This project bridges the formal, classical world of piano performance with the gritty, imaginative aesthetic of steampunk subculture at the Opera House London.</p>
+      
+      <div class="two-col" style="margin-top: 40px;">
+        <div>
+          <p class="body-text">The challenge was to create a visual system that respected both the prestige of a classical concert venue and the raw, mechanical energy of steampunk culture — without resorting to surface-level ornament.</p>
+        </div>
+        <div>
+          <p class="body-text">The solution was to root everything in Victorian engineering logic — treating the festival's visual language as if it were drawn from actual blueprints and industrial archives rather than fictional clichés.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- THE PROBLEM -->
+  <div class="content-section fade-section">
+    <div class="section-container">
+      <p class="section-subhead">The Problem</p>
+      <h2 class="section-heading">The theatrical<br><span class="accent">cliché</span></h2>
+      
+      <p class="body-text">Existing steampunk designs often rely on surface-level ornaments — gears and rivets — that lack functional logic. For a prestigious venue like the Opera House, these tropes felt too informal and lacked the "archival weight" necessary to communicate high-caliber musical performance.</p>
+      
+      <div class="insight-box">
+        <h4>The design brief</h4>
+        <p>Create an event identity that feels both historically grounded and contemporary — one that can speak to classical music audiences while capturing the imagination of a broader cultural crowd.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- OUTDOOR APPLICATION -->
+  <div class="content-section fade-section">
+    <div class="section-container">
+      <p class="section-subhead">Outdoor Application</p>
+      <h2 class="section-heading">Testing the palette<br><span class="accent">in context</span></h2>
+      
+      <div class="image-container">
+        <img src="images/Screenshot 2026-02-25 104321.png" alt="Festival billboard on Waterloo Road">
+      </div>
+      <p class="caption">Outdoor application: testing the Archival Teal palette in a modern urban context.</p>
+      
+      <p class="body-text">The identity needed to work at scale — from printed posters to outdoor advertising. The Waterloo Road billboard tests how the blueprint aesthetic translates to public space, maintaining legibility and impact.</p>
+    </div>
+  </div>
+
+  <!-- VISUAL IDENTITY -->
+  <div class="content-section fade-section">
+    <div class="section-container">
+      <p class="section-subhead">Visual Identity</p>
+      <h2 class="section-heading">Archival weight over<br><span class="accent">decorative noise</span></h2>
+
+      <div class="image-container">
+        <img src="images/Screenshot 2026-02-25 105618.jpg" alt="Steampunk Festival brand board with colour palette and typography">
+      </div>
+      <p class="caption">Brand ecosystem — colour palette, typography, and design system.</p>
+
+      <p class="body-text">The identity is anchored by a curated typographic system. <strong>Algerian</strong> provides the ornate Victorian headers, while <strong>Cubano</strong> adds industrial grounding. The colour palette moves away from typical steampunk bronze toward an <strong>Archival Teal</strong> that evokes historical blueprints.</p>
+
+      <!-- Colour palette -->
+      <div class="palette-grid">
+        <div class="swatch" style="background: #84ABAA;">
+          <span style="color: #000;">#84ABAA<br>Archival Teal</span>
+        </div>
+        <div class="swatch" style="background: #6D323A;">
+          <span style="color: #fff;">#6D323A<br>Victorian Red</span>
+        </div>
+        <div class="swatch" style="background: #2C2416;">
+          <span style="color: #fff;">#2C2416<br>Period Brown</span>
+        </div>
+        <div class="swatch" style="background: #F2F0EB;">
+          <span style="color: #000;">#F2F0EB<br>Paper White</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MERCHANDISE - BAG, MUG, KEYCHAIN -->
+  <div class="content-section fade-section">
+    <div class="section-container">
+      <p class="section-subhead">Merchandise</p>
+      <h2 class="section-heading">From print<br><span class="accent">to product</span></h2>
+
+      <!-- Three smaller images in a row -->
+      <div class="three-col">
+        <div class="image-container" style="padding: 10px;">
+          <img src="images/bag.png" alt="Steampunk Festival tote bag with blueprint design">
+        </div>
+        <div class="image-container" style="padding: 10px;">
+          <img src="images/mug.png" alt="Steampunk Festival ceramic mug with archival teal logo">
+        </div>
+        <div class="image-container" style="padding: 10px;">
+          <img src="images/keychain.png" alt="Steampunk Festival metal keychain with Victorian motif">
+        </div>
+      </div>
+      <p class="caption">Branded merchandise — the blueprint motif works across different materials and scales.</p>
+
+      <p class="body-text">The identity extends naturally to merchandise. The blueprint motif maintains its technical precision whether printed on fabric, ceramic, or metal — proving the flexibility of the visual system.</p>
+    </div>
+  </div>
+
+  <!-- T-SHIRT -->
+  <div class="content-section fade-section">
+    <div class="section-container">
+      <p class="section-subhead">Apparel</p>
+      <h2 class="section-heading">Wearable<br><span class="accent">precision</span></h2>
+
+      <div class="image-container" style="max-width: 600px; margin-left: auto; margin-right: auto;">
+        <img src="images/t-shirt.png" alt="Festival t-shirt with blueprint logo">
+      </div>
+      <p class="caption">Brand extension: the blueprint aesthetic applied to apparel.</p>
+
+      <p class="body-text">The t-shirt applies the same technical illustration approach to a wearable format. The design maintains its architectural quality while becoming a statement piece for festival-goers.</p>
+    </div>
+  </div>
+
+  <!-- DIGITAL UX / MOBILE TICKETING -->
+  <div class="content-section fade-section">
+    <div class="section-container">
+      <p class="section-subhead">Digital Presence</p>
+      <h2 class="section-heading">Frictionless<br><span class="accent">ticketing</span></h2>
+
+      <div class="image-container" style="max-width: 400px; margin-left: auto; margin-right: auto;">
+        <img src="images/mobile.png" alt="Mobile ticketing interface">
+      </div>
+      <p class="caption">The mobile experience translates mechanical complexity into a clear purchase path.</p>
+
+      <p class="body-text">Translating the identity into a digital product meant simplifying without losing character. The ticketing interface applies the typographic system and teal palette to a minimal layout — ensuring the visual richness of the print identity doesn't overwhelm functionality.</p>
+
+      <div class="pull-quote">
+        <p>Mechanical complexity on the poster; effortless clarity in the purchase flow.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONCLUSION -->
+  <div class="content-section fade-section">
+    <div class="section-container">
+      <p class="section-subhead">Conclusion</p>
+      <h2 class="section-heading">Supporting the<br><span class="accent">imagination</span></h2>
+      
+      <p class="body-text-large">By reframing steampunk as a serious study of Victorian engineering, the branding aligns with the prestige of the Opera House.</p>
+      
+      <p class="body-text">It demonstrates that event systems should support the imagination of the audience while respecting the historical context of the place they inhabit. The result is an identity that feels earned — not costumed.</p>
+    </div>
+  </div>
+
+  <!-- FOOTER CTA -->
+  <div class="project-footer-cta">
+    <h3>Next<br>Project</h3>
+    <a href="project-harmless.html" class="next-project-link" aria-label="View next project: Harmless Store">
+      Harmless Store
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </a>
+  </div>
+
+  </main>
+
+  <script>
+    // Custom cursor
+    const cursor = document.getElementById('cursor');
+    if (window.matchMedia('(pointer: fine)').matches && cursor) {
+      document.addEventListener('mousemove', e => {
+        cursor.style.left = e.clientX + 'px';
+        cursor.style.top = e.clientY + 'px';
+      });
+      document.querySelectorAll('a, button, .next-project-link').forEach(el => {
+        el.addEventListener('mouseenter', () => cursor.classList.add('grow'));
+        el.addEventListener('mouseleave', () => cursor.classList.remove('grow'));
+      });
+    }
+
+    // Fade-in on scroll
+    const fadeElements = document.querySelectorAll('.fade-section');
+    
+    const fadeObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.2, rootMargin: '0px 0px -10px 0px' });
+    
+    fadeElements.forEach(el => fadeObserver.observe(el));
+  </script>
+
+</body>
+</html>
