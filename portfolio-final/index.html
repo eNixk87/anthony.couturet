@@ -1062,21 +1062,21 @@
         <p>I'm open to freelance projects, internships, and collaborative work. Whether you have a brief or just an idea, I'd love to hear from you.</p>
         <a href="mailto:anthony.couturet@gmail.com" class="contact-email">anthony.couturet@gmail.com</a>
       </div>
-      <form class="contact-form" name="contact" method="POST" data-netlify="true" aria-label="Contact form">
-        <input type="hidden" name="form-name" value="contact" />
+      <form class="contact-form" id="contact-form">
         <div class="form-group">
           <label for="contact-name">Name</label>
-          <input type="text" id="contact-name" name="name" placeholder="Your name" required autocomplete="name">
+          <input type="text" id="contact-name" name="fi-sender-fullName" placeholder="Your name" required>
         </div>
         <div class="form-group">
           <label for="contact-email">Email</label>
-          <input type="email" id="contact-email" name="email" placeholder="your@email.com" required autocomplete="email">
+          <input type="email" id="contact-email" name="fi-sender-email" placeholder="your@email.com" required>
         </div>
         <div class="form-group">
           <label for="contact-message">Message</label>
-          <textarea id="contact-message" name="message" placeholder="Tell me about your project..." rows="4"></textarea>
+          <textarea id="contact-message" name="fi-text-message" placeholder="Tell me about your project..." required></textarea>
         </div>
         <button type="submit" class="form-submit">Send Message</button>
+        <p id="form-result" style="margin-top: 16px; font-size: 14px; letter-spacing: 0.05em;"></p>
       </form>
     </div>
   </section>
@@ -1298,6 +1298,32 @@
       });
     });
 
+  </script>
+
+  <script src="https://forminit.com/sdk/v1/forminit.js"></script>
+  <script>
+    const forminit = new Forminit();
+    const FORM_ID = 'y0dzhv2izeo';
+    const contactForm = document.getElementById('contact-form');
+    const formResult = document.getElementById('form-result');
+
+    contactForm.addEventListener('submit', async function(event) {
+      event.preventDefault();
+      formResult.textContent = '';
+
+      const formData = new FormData(contactForm);
+      const { data, error } = await forminit.submit(FORM_ID, formData);
+
+      if (error) {
+        formResult.style.color = '#e05555';
+        formResult.textContent = error.message;
+        return;
+      }
+
+      formResult.style.color = '#7eb87a';
+      formResult.textContent = 'Message sent — I\'ll be in touch soon.';
+      contactForm.reset();
+    });
   </script>
 
 </body>
