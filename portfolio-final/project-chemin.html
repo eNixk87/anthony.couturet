@@ -6,7 +6,7 @@
   <meta name="description" content="Brand & web design case study: A responsive wellness website for a massage, reiki, and access bars practice in Nice, France." />
   <meta name="author" content="Anthony Couturet" />
   <meta property="og:title" content="Chemin vers soi — Brand & Web Design" />
-  <meta property="og:description" content="Brand & web design case study: A responsive wellness website for a massage, reiki, and access bars practice in Nice, France." />
+  <meta property="og:description" content="Brand & web design case study: Brand & web design case study: A responsive wellness website for a massage, reiki, and access bars practice in Nice, France." />
   <meta property="og:type" content="website" />
   <title>Chemin vers soi — Anthony Couturet</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -181,8 +181,18 @@
       line-height: 0.88; 
       letter-spacing: 0.02em; 
       color: var(--white); 
-      margin-bottom: 40px; 
+      margin-bottom: 20px; 
       max-width: 750px;
+    }
+    .project-summary {
+      font-size: 18px;
+      line-height: 1.6;
+      color: #ddd;
+      max-width: 600px;
+      margin-bottom: 32px;
+      border-left: 2px solid var(--c1);
+      padding-left: 24px;
+      font-style: italic;
     }
     .project-meta { 
       display: grid; 
@@ -503,7 +513,12 @@
         margin-bottom: 20px;
       }
       .project-number { font-size: 11px; margin-bottom: 16px; color: rgba(255,255,255,0.5); }
-      .project-title { font-size: clamp(50px, 13vw, 70px); margin-bottom: 32px; max-width: 100%; }
+      .project-title { font-size: clamp(50px, 13vw, 70px); margin-bottom: 16px; max-width: 100%; }
+      .project-summary {
+        font-size: 16px;
+        padding-left: 16px;
+        margin-bottom: 24px;
+      }
       .project-meta {
         display: grid;
         grid-template-columns: 1fr 1fr !important;
@@ -679,6 +694,11 @@
         <p class="project-number">Project 04 / 04</p>
         <span class="project-category-tag">Brand &amp; Web Design</span>
         <h1 class="project-title">Chemin<br>vers soi</h1>
+        
+        <div class="project-summary">
+          A complete visual identity and fully coded responsive website for a wellness practice in Nice — drawing the logo and service icons directly from the Flower of Life geometry.
+        </div>
+        
         <div class="project-meta">
           <div class="meta-item">
             <label>Context</label>

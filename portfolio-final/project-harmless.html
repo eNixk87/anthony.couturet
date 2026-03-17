@@ -195,8 +195,18 @@
       line-height: 0.88; 
       letter-spacing: 0.02em; 
       color: var(--white); 
-      margin-bottom: 40px; 
+      margin-bottom: 20px; 
       max-width: 750px;
+    }
+    .project-summary {
+      font-size: 18px;
+      line-height: 1.6;
+      color: #ddd;
+      max-width: 600px;
+      margin-bottom: 32px;
+      border-left: 2px solid var(--c3);
+      padding-left: 24px;
+      font-style: italic;
     }
     .project-meta { 
       display: grid; 
@@ -519,7 +529,12 @@
         margin-bottom: 20px;
       }
       .project-number { font-size: 11px; margin-bottom: 16px; color: rgba(255,255,255,0.5); }
-      .project-title { font-size: clamp(50px, 13vw, 70px); margin-bottom: 32px; max-width: 100%; }
+      .project-title { font-size: clamp(50px, 13vw, 70px); margin-bottom: 16px; max-width: 100%; }
+      .project-summary {
+        font-size: 16px;
+        padding-left: 16px;
+        margin-bottom: 24px;
+      }
       .project-meta {
         display: grid;
         grid-template-columns: 1fr 1fr !important;
@@ -682,6 +697,11 @@
         <p class="project-number">Project 03 / 04</p>
         <span class="project-category-tag">App Design · Sustainable Living</span>
         <h1 class="project-title">Harmless<br>Store</h1>
+        
+        <div class="project-summary">
+          An interactive prototype for an ethical food retail app — combining daily meal tracking with eco-conscious shopping in a calm, purposeful interface.
+        </div>
+        
         <div class="project-meta">
           <div class="meta-item">
             <label>Module</label>

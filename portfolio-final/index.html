@@ -109,7 +109,7 @@
       padding: 28px 48px;
       mix-blend-mode: difference;
     }
-    .logo svg { width: 36px; height: 36px; }
+    .logo svg { width: 72px; height: 72px; }
     .nav-links { display: flex; gap: 40px; list-style: none; }
     .nav-links a {
       color: var(--white);
@@ -198,7 +198,7 @@
 
     .hero-photo {
       position: absolute;
-      left: 0; top: 0;
+      right: 0; top: 0;
       width: 52%;
       height: 100%;
       object-fit: cover;
@@ -213,7 +213,7 @@
 
     .hero-diamond {
       position: absolute;
-      right: 8%; top: 50%;
+      left: 8%; top: 50%;
       transform: translateY(-50%);
       width: 380px; height: 380px;
       background: #1a1a1a;
@@ -229,18 +229,18 @@
       width: 100%;
       display: flex;
       flex-direction: column;
-      align-items: flex-end;
+      align-items: flex-start;
     }
 
     .hero-name {
       font-family: 'Cormorant Garamond', serif;
       font-size: clamp(80px, 11vw, 160px);
       font-weight: 600;
-      font-style: italic;
+
       line-height: 0.88;
       letter-spacing: 0.02em;
       color: var(--white);
-      text-align: right;
+      text-align: left;
     }
 
     .reveal-word {
@@ -262,7 +262,7 @@
       text-transform: uppercase;
       color: #999;
       margin-top: 24px;
-      text-align: right;
+      text-align: left;
       opacity: 0;
       animation: fadeIn 1s ease 1s forwards;
     }
@@ -307,7 +307,7 @@
       color: #bbb;
       text-decoration: none;
       margin-top: 16px;
-      text-align: right;
+      text-align: left;
       opacity: 0;
       animation: fadeIn 1s ease 1.5s forwards;
       transition: color 0.3s;
@@ -863,7 +863,7 @@
 
   <nav role="navigation" aria-label="Main navigation" id="mainNav">
     <a href="/" class="logo" aria-label="Anthony Couturet — Home">
-      <img src="images/logo.png" alt="Anthony Couturet" style="width: 36px; height: 36px;">
+      <img src="images/logo.png" alt="Anthony Couturet" style="width: 72px; height: 72px;">
     </a>
     <ul class="nav-links">
       <li><a href="#about">About</a></li>

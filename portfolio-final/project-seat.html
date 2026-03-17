@@ -198,6 +198,16 @@
       margin-bottom: 40px; 
       max-width: 750px;
     }
+    .project-summary {
+      font-size: 18px;
+      line-height: 1.6;
+      color: #ddd;
+      max-width: 600px;
+      margin-bottom: 32px;
+      border-left: 2px solid var(--c1);
+      padding-left: 24px;
+      font-style: italic;
+    }
     .project-meta { 
       display: grid; 
       grid-template-columns: repeat(4, auto); 
@@ -467,7 +477,12 @@
         margin-bottom: 20px;
       }
       .project-number { font-size: 11px; margin-bottom: 16px; color: rgba(255,255,255,0.5); }
-      .project-title { font-size: clamp(50px, 13vw, 70px); margin-bottom: 32px; max-width: 100%; }
+      .project-title { font-size: clamp(50px, 13vw, 70px); margin-bottom: 16px; max-width: 100%; }
+      .project-summary {
+        font-size: 16px;
+        padding-left: 16px;
+        margin-bottom: 24px;
+      }
       .project-meta {
         display: grid;
         grid-template-columns: 1fr 1fr !important;
@@ -631,7 +646,11 @@
         <p class="project-number" style="font-weight: 600; font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 20px;">Project 01 / 04</p>
         <span class="project-category-tag" style="display: inline-block; font-weight: 600; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--black); background: var(--white); padding: 7px 16px; margin-bottom: 24px;">UX Design · Service Design</span>
 
-        <h1 class="project-title" style="font-family: 'Cormorant Garamond', serif; font-weight: 600; font-style: italic; font-size: clamp(50px, 8vw, 120px); line-height: 0.88; letter-spacing: 0.02em; color: var(--white); margin-bottom: 40px;">When Things<br>Go to Seat</h1>
+        <h1 class="project-title" style="font-family: 'Cormorant Garamond', serif; font-weight: 600; font-style: italic; font-size: clamp(50px, 8vw, 120px); line-height: 0.88; letter-spacing: 0.02em; color: var(--white); margin-bottom: 20px;">When Things<br>Go to Seat</h1>
+        
+        <div class="project-summary">
+          A redesign of SevenRooms for Petersham Nurseries - shifting from static table tracking to live workload signals, helping hosts make better decisions during service.
+        </div>
 
         <div class="project-meta" style="display: grid; grid-template-columns: repeat(4, auto); gap: 60px; justify-content: start;">
           <div class="meta-item">
